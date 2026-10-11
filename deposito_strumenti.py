@@ -43,12 +43,12 @@ class DepositoStrumenti:
         ultimo_numero = 0
         if len(self.strumenti) > 0:
             ultimo_codice = self.strumenti[-1].codice
-
             ultimo_numero = int(ultimo_codice[-1:])
-            nuovo_codice = f"S{ultimo_numero + 1}"
-            nuovo_strumento = Strumento(nuovo_codice, tipo, marca, int(anno_acquisto), float(valore))
-            self.strumenti.append(nuovo_strumento)
-            return nuovo_strumento
+
+        nuovo_codice = f"S{ultimo_numero + 1}"
+        nuovo_strumento = Strumento(nuovo_codice, tipo, marca, int(anno_acquisto), float(valore))
+        self.strumenti.append(nuovo_strumento)
+        return nuovo_strumento
 
     def strumenti_ordinati_per_marca(self):
         """Ordina gli strumenti per marca in ordine alfabetico"""
@@ -56,19 +56,36 @@ class DepositoStrumenti:
 
     def nuovo_prestito(self, data, id_strumento, cognome_allievo):
         """Crea un nuovo prestito"""
-        ultimo_codice = 0
+        # Controlla se lo strumento esiste nel deposito
+        esiste = False
+        for s in self.strumenti:
+            if s.codice == id_strumento:
+                esiste = True
+                break
+        if not esiste:
+            raise Exception(f"Errore: Strumento {id_strumento} non presente nel deposito")
+
+        # Controlla se lo strumento è già in prestito
+        for p in self.prestiti:
+            if p.id_strumento == id_strumento:
+                raise Exception(f"Errore: Lo strumento {id_strumento} è gia in prestito")
+
+        # Calcola il nuovo codice (es. P1,P2 ecc...)
+        ultimo_numero = 0
         if len(self.prestiti) > 0:
-            ultimo_codice = int(self.prestiti[-1].codice)
+            ultimo_codice = self.prestiti[-1].codice
+            ultimo_numero = int(ultimo_codice[1:])
 
-            nuovo_codice = int(ultimo_codice + 1)
-
-            prestito = Prestito(
-                nuovo_codice,
-                data,
-                id_strumento,
-                cognome_allievo
+        nuovo_codice = f"P{ultimo_numero + 1}"
+        prestito = Prestito(
+            nuovo_codice,
+            data,
+            id_strumento,
+            cognome_allievo
             )
-            self.prestiti.append(prestito)
+        self.prestiti.append(prestito)
+        return prestito
+
 
     def termina_prestito(self, id_prestito):
         """Termina un prestito in atto"""
@@ -78,4 +95,5 @@ class DepositoStrumenti:
                 self.prestiti.remove(prestito)
                 return True
 
-        return False
+        # Se il ciclo finisce senza trovare prestito, lancia l'eccezione
+        raise Exception(f"Errore: Prestito {id_prestito} non trovato")

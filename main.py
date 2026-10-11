@@ -21,7 +21,7 @@ def main():
 
         if scelta == "1":
             nuovo_responsabile = input("Inserisci il nuovo responsabile: ")
-            deposito.responsabile(nuovo_responsabile)
+            deposito.responsabile = nuovo_responsabile
             print("Responsabile aggiornato.")
 
         elif scelta == "2":
