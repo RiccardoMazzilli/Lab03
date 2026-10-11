@@ -43,7 +43,7 @@ class DepositoStrumenti:
         ultimo_numero = 0
         if len(self.strumenti) > 0:
             ultimo_codice = self.strumenti[-1].codice
-            ultimo_numero = int(ultimo_codice[-1:])
+            ultimo_numero = int(ultimo_codice[1:])
 
         nuovo_codice = f"S{ultimo_numero + 1}"
         nuovo_strumento = Strumento(nuovo_codice, tipo, marca, int(anno_acquisto), float(valore))
